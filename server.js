@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'production') {
         cert: fs.readFileSync('/etc/ssl/virtualmin/169985749449668/ssl.cert'), // Reemplaza con la ruta a tu ce>
     };
     
-    const httpsServer = https.createServer(app, httpsOptions)   
+    const httpsServer = https.createServer(httpsOptions,app)   
     httpsServer.listen(PORT, () => {
         console.log('El servidor está corriendo en el puerto ' + PORT);
     });
