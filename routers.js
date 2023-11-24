@@ -428,7 +428,7 @@ async function downloadVideo(ytDlpPath, link, outputOption, outputTemplate) {
     try {
         console.log(ytDlpPath, link, outputTemplate)
         const command = spawn(ytDlpPath, [
-            link, outputOption, outputTemplate
+            link,'-f', 'mp4', outputOption, outputTemplate
         ])
         console.log("Estoy aqui")
         return new Promise((resolve, reject) => {
