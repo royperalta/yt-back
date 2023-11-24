@@ -8,7 +8,7 @@ export function extraerUrlAudio(urlCompleta) {
   
     // Si hay una coincidencia, devuelve la URL del audio
     // Si no hay coincidencia, devuelve null
-    return match ? match[0] : null;
+    return match ? match[0] : urlCompleta;
   }
   
  
