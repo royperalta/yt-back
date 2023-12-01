@@ -176,13 +176,14 @@ router.post("/descargar", async (req, res) => {
             const formatType = 'mp3';
             const outputOption = '--output';
             //const downloadPath = './descargas'; // Reemplaza con la ruta absoluta a la carpeta de descargas
-            const outputTemplate = `./descargas/${idCarpeta}/%(id)s.%(ext)s`;
+            
 
             const videoId = await getVideoId(ytDlpPath, link,idCarpeta);
             //const title = await getVideoTitle(ytDlpPath, urlAudio);
 
             if (isTikTokUrl(link)) {
                 console.log("Por tiktok mp3")
+                const outputTemplate = `./descargas/${idCarpeta}/%(id)s.%(ext)s`;
                 try {
                     await downloadAudioTiktok(ytDlpPath, link, outputFormat, formatType, outputOption, outputTemplate);
                 } catch (error) {
@@ -190,6 +191,7 @@ router.post("/descargar", async (req, res) => {
                     return res.status(400).json({ error: error })
                 }
             } else {
+                const outputTemplate = `./descargas/${idCarpeta}/%(title)s - %(id)s.%(ext)s`;
                 try {
                     await downloadAudio(ytDlpPath, link, outputFormat, formatType, outputOption, outputTemplate);
                 } catch (error) {
