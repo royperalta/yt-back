@@ -1,9 +1,7 @@
 import express from 'express'
 import { spawn } from 'child_process'
 import fs from 'fs'
-
 import { idVideo } from './services/id.js'
-
 import { extraerUrlAudio } from './services/limpiarUrl.js'
 import { readdir } from 'fs/promises'
 import { crearCarpetaUnica } from './services/crearCarpeta.js'
@@ -12,9 +10,11 @@ import { isValidURL } from './services/isValidURL.js'
 const router = express.Router()
 const ytDlpPath = './extensiones/yt-dlp';
 
-
-
 ////INICIA NUEVO--------------------
+
+router.get('/',(req,res)=>{
+    res.status(200).json({status:true,message:"envivo.top"})
+})
 
 router.post('/imagen', async (req, res) => {
     const link = req.body.url
@@ -735,8 +735,6 @@ function downloadAudioTiktok(ytDlpPath, link, outputFormat, formatType, outputOp
     }
 
 }
-
-
 
 
 export { router }

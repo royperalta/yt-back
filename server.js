@@ -5,6 +5,7 @@ import http from 'http'
 import fs from 'fs'
 import { router } from './routers.js'
 import cors from 'cors'
+import { routerPDF } from './routerPDF.js'
 
 const app = express()
 
@@ -14,6 +15,7 @@ app.use(express.json())
 app.use('/images', express.static('./descargas'))
 app.use(cors())
 app.use('/api', router)
+app.use('/api/pdf',routerPDF)
 
 const PORT = process.env.PORT || 9200
 
@@ -23,8 +25,8 @@ if (process.env.NODE_ENV === 'production') {
         key: fs.readFileSync('/etc/ssl/virtualmin/169985749449668/ssl.key'), // Reemplaza con la ruta a tu clav>
         cert: fs.readFileSync('/etc/ssl/virtualmin/169985749449668/ssl.cert'), // Reemplaza con la ruta a tu ce>
     };
-    
-    const httpsServer = https.createServer(httpsOptions,app)   
+
+    const httpsServer = https.createServer(httpsOptions, app)
     httpsServer.listen(PORT, () => {
         console.log('El servidor está corriendo en el puerto ' + PORT);
     });
