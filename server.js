@@ -3,19 +3,42 @@ import dotenv from 'dotenv'
 import https from 'https'
 import http from 'http'
 import fs from 'fs'
+import cookieParser from 'cookie-parser';
 import { router } from './routers.js'
 import cors from 'cors'
 import { routerPDF } from './routerPDF.js'
+import { routerLogin } from './routerLogin.js'
+import connectDB from './lib/mongoose.js';
 
+connectDB();
 const app = express()
+
+// Middleware para analizar cookies
+app.use(cookieParser());
 
 dotenv.config({ path: '.env' })
 
 app.use(express.json())
 app.use('/images', express.static('./descargas'))
-app.use(cors())
+const allowedOrigins = ['http://localhost:3000', 'https://envivo.top'];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Permite solicitudes desde cualquier dominio si no se proporciona el encabezado 'Origin'
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'El acceso desde el origen no está permitido';
+      return callback(new Error(msg), false);
+    }
+    
+    return callback(null, true);
+  },
+  credentials: true // Permite enviar cookies en la solicitud
+}));
 app.use('/api', router)
 app.use('/api/pdf',routerPDF)
+app.use('/api/user',routerLogin) 
 
 const PORT = process.env.PORT || 9200
 
