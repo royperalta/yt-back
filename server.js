@@ -43,11 +43,13 @@ app.use('/api/user',routerLogin)
 const PORT = process.env.PORT || 9200
 
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {  
+
     const httpsOptions = {
         key: fs.readFileSync('/etc/ssl/virtualmin/169985749449668/ssl.key'), // Reemplaza con la ruta a tu clav>
-        cert: fs.readFileSync('/etc/ssl/virtualmin/169985749449668/ssl.cert'), // Reemplaza con la ruta a tu ce>
-    };
+          cert: fs.readFileSync('/etc/ssl/virtualmin/169985749449668/ssl.cert'), // Reemplaza con la ruta a tu ce>
+        };
+        
 
     const httpsServer = https.createServer(httpsOptions, app)
     httpsServer.listen(PORT, () => {
