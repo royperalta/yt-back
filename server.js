@@ -20,7 +20,7 @@ dotenv.config({ path: '.env' })
 
 app.use(express.json())
 app.use('/images', express.static('./descargas'))
-const allowedOrigins = ['http://localhost:3000', 'https://envivo.top'];
+const allowedOrigins = ['http://localhost:3000', 'https://envivo.top:9300','https://envivo.top'];
 
 app.use(cors({
   origin: function(origin, callback) {
