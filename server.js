@@ -8,6 +8,7 @@ import { router } from './routers.js'
 import cors from 'cors'
 import { routerPDF } from './routerPDF.js'
 import { routerLogin } from './routerLogin.js'
+import { routerBookLet } from './routerBookLet.js'
 import connectDB from './lib/mongoose.js';
 
 connectDB();
@@ -39,6 +40,7 @@ app.use(cors({
 app.use('/api', router)
 app.use('/api/pdf',routerPDF)
 app.use('/api/user',routerLogin) 
+app.use('/api/booklet',routerBookLet)
 
 const PORT = process.env.PORT || 9200
 
