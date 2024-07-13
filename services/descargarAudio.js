@@ -11,13 +11,14 @@ import fs from 'fs'
  */
 async function descargarAudio(url, downloadPath) {
     const jsonPath = `${downloadPath}/info.json`;
-
+    const cookiesPath = './youtube-cookies.txt'; // Ruta al archivo de cookies
     const ytDlp = spawn('yt-dlp', [
         '-x', // Descargar solo el audio
         '--audio-format', 'mp3', // Formato de audio deseado
         '--audio-quality', '0', // Calidad de audio máxima
         '--write-info-json', // Crear archivo JSON con la información del audio
         '--write-json', downloadPath, // Guardar archivo JSON en la carpeta de descarga
+        '--cookies', cookiesPath, // Leer cookies de YouTube
         url // URL del video de YouTube
     ]);
 
