@@ -9,6 +9,7 @@ import isTikTokUrl from './services/validarLink.js'
 import { isValidURL } from './services/isValidURL.js'
 const router = express.Router()
 const ytDlpPath = './extensiones/yt-dlp';
+const cookiesPath = './youtube-cookies.txt'; // Ruta al archivo de cookies
 
 ////INICIA NUEVO--------------------
 
@@ -28,6 +29,7 @@ router.post('/imagen', async (req, res) => {
     const args = [
         '--skip-download',
         '--get-thumbnail',
+        '--cookies', cookiesPath,
         url,
     ];
     let thumbnailUrl = ""
@@ -175,6 +177,7 @@ router.post("/descargar", async (req, res) => {
             const outputFormat = '--audio-format';
             const formatType = 'mp3';
             const outputOption = '--output';
+            
             //const downloadPath = './descargas'; // Reemplaza con la ruta absoluta a la carpeta de descargas
             
 
@@ -327,7 +330,7 @@ router.post('/download', async (req, res) => {
 
 async function getVideoId(ytDlpPath, url,idCarpeta) {
 
-    const commandId = spawn(ytDlpPath, ['-x', '--get-id', url]);
+    const commandId = spawn(ytDlpPath, ['-x', '--get-id','--cookies', cookiesPath, url]);
     return new Promise((resolve, reject) => {
         let videoId = '';
 
@@ -363,7 +366,7 @@ async function getVideoId(ytDlpPath, url,idCarpeta) {
 
 async function getVideoTitle(ytDlpPath, url) {
     try {
-        const commandTitle = spawn(ytDlpPath, ['-x', '--no-warnings', '--get-filename', url]);
+        const commandTitle = spawn(ytDlpPath, ['-x', '--no-warnings', '--get-filename','--cookies', cookiesPath, url]);
         return new Promise((resolve, reject) => {
             let title = '';
             commandTitle.stdout.on('data', (data) => {
@@ -390,7 +393,7 @@ async function downloadAudio(ytDlpPath, link, outputFormat, formatType, outputOp
         const command = spawn(ytDlpPath, [
             '-x',
             outputFormat, formatType,
-            outputOption, outputTemplate,
+            outputOption, outputTemplate,'--cookies', cookiesPath,
             link
         ]);
 
@@ -430,7 +433,7 @@ async function downloadVideo(ytDlpPath, link, outputOption, outputTemplate) {
     try {
         console.log(ytDlpPath, link, outputTemplate)
         const command = spawn(ytDlpPath, [
-            link,'-f', 'mp4', outputOption, outputTemplate
+            link,'-f', 'mp4', outputOption, outputTemplate,'--cookies', cookiesPath
         ])
         console.log("Estoy aqui")
         return new Promise((resolve, reject) => {
@@ -453,7 +456,7 @@ async function downloadVideoTiktok(ytDlpPath, link, outputOption, outputTemplate
 
     const commandArgs = [
         '--replace-in-metadata', 'title', '[^a-zA-Z0-9]', ' ',
-        link, outputOption, outputTemplate
+        link, outputOption, outputTemplate,'--cookies', cookiesPath,
     ];
     console.log(`Ejecutando comando: ${ytDlpPath} ${commandArgs.join(' ')}`);
     const command = spawn(ytDlpPath, commandArgs);
@@ -632,7 +635,7 @@ router.post('/image/', async (req, res) => {
           ]) */
 
         const commandImage = spawn('yt-dlp', [
-            '--skip-download', '--write-thumbnail', '-o', outputImage, url
+            '--skip-download', '--write-thumbnail', '-o', outputImage, '--cookies', cookiesPath, url
         ])
         commandImage.stdout.on('data', (data) => {
             console.log(data.toString())
@@ -718,6 +721,7 @@ function downloadAudioTiktok(ytDlpPath, link, outputFormat, formatType, outputOp
             '-x', '--replace-in-metadata', 'title,uploader', '[^a-zA-Z0-9]', '',
             outputFormat, formatType,
             outputOption, outputTemplate,
+            '--cookies', cookiesPath,
             link
         ]);
 
