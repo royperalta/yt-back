@@ -47,17 +47,17 @@ const PORT = process.env.PORT || 9200
 
 if (process.env.NODE_ENV === 'production') {  
 
-    const httpsOptions = {
+    /* const httpsOptions = {
         key: fs.readFileSync('/etc/ssl/virtualmin/169985648837673/ssl.key'), // Reemplaza con la ruta a tu clav>
           cert: fs.readFileSync('/etc/ssl/virtualmin/169985648837673/ssl.cert'), // Reemplaza con la ruta a tu ce>
-        };
+        }; */
         
 
-      /*   const httpsOptions = {
+        const httpsOptions = {
           key: fs.readFileSync('/etc/letsencrypt/live/envivo.top/privkey.pem'), // Ruta a tu clave privada
           cert: fs.readFileSync('/etc/letsencrypt/live/envivo.top/fullchain.pem'), // Ruta a tu certificado
         };
-         */
+        
 
     const httpsServer = https.createServer(httpsOptions, app)
     httpsServer.listen(PORT, () => {
