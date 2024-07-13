@@ -10,7 +10,7 @@ import { isValidURL } from './services/isValidURL.js';
 
 const router = express.Router();
 const ytDlpPath = './extensiones/yt-dlp';
-const cookiesPath = './youtube-cookies.txt';
+const cookiesPath = './cookies.txt';
 
 router.get('/', (req, res) => {
     res.status(200).json({ status: true, message: "envivo.top" });
