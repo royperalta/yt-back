@@ -7,10 +7,35 @@ import { readdir } from 'fs/promises';
 import { crearCarpetaUnica } from './services/crearCarpeta.js';
 import isTikTokUrl from './services/validarLink.js';
 import { isValidURL } from './services/isValidURL.js';
+import axios from 'axios';
+import tough from 'tough-cookie';
+import puppeteer from 'puppeteer';
 
 const router = express.Router();
 const ytDlpPath = './extensiones/yt-dlp';
 const cookiesPath = './cookies.txt';
+
+async function obtenerCookiesYGuardar() {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    
+    // Ir a YouTube
+    await page.goto('https://www.youtube.com');
+    
+    // Asegurarse de que la página se haya cargado completamente
+    await page.waitForSelector('ytd-app', { visible: true });
+    
+    // Obtener las cookies
+    const cookies = await page.cookies();
+    
+    // Guardar las cookies en cookies.txt en la ruta principal
+    fs.writeFileSync('cookies.txt', JSON.stringify(cookies, null, 2));
+    
+    await browser.close();
+    
+    console.log('Cookies guardadas en cookies.txt');
+}
+
 
 router.get('/', (req, res) => {
     res.status(200).json({ status: true, message: "envivo.top" });
@@ -58,7 +83,7 @@ router.post("/descargar", async (req, res) => {
     try {
         const { mp3, link } = req.body;
         const idCarpeta = crearCarpetaUnica();
-
+        await obtenerCookiesYGuardar()
         let outputTemplate;
         let downloadFunction;
 
@@ -191,7 +216,7 @@ function eliminarCarpetaRecursiva(idCarpeta) {
 
 async function getVideoId(ytDlpPath, link, idCarpeta) {
     try {
-        const commandId = spawn(ytDlpPath, ['-x', '--get-id', '--cookies', cookiesPath, link]);
+        const commandId = spawn(ytDlpPath, ['-x', '--get-id', link]);
         let videoId = '';
 
         commandId.stdout.on('data', (data) => {
