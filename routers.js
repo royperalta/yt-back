@@ -181,7 +181,8 @@ router.post("/descargar", async (req, res) => {
             //const downloadPath = './descargas'; // Reemplaza con la ruta absoluta a la carpeta de descargas
             
 
-            const videoId = await getVideoId(ytDlpPath, link,idCarpeta);
+            const videoId = await getVideoId(ytDlpPath, link, idCarpeta);
+            console.log("ID: ",videoId)
             //const title = await getVideoTitle(ytDlpPath, urlAudio);
 
             if (isTikTokUrl(link)) {
@@ -321,7 +322,7 @@ router.post('/download', async (req, res) => {
             title: title
         };
 
-        res.json(response);
+        res.status(200).json(response);
     } catch (error) {
         console.error(error);
         res.status(400).json(`Se produjo un error: ${error.message || error}`);
@@ -378,7 +379,7 @@ async function getVideoTitle(ytDlpPath, url) {
                     resolve(title);
                 } else {
                     reject(new Error(`Error al obtener el título del video: ${code}`));
-                    res.status(400).json({ "error": "error" });
+                   
                 }
             });
         });
@@ -388,12 +389,11 @@ async function getVideoTitle(ytDlpPath, url) {
 }
 
 async function downloadAudio(ytDlpPath, link, outputFormat, formatType, outputOption, outputTemplate) {
-
     try {
         const command = spawn(ytDlpPath, [
-            '-x',
-            outputFormat, formatType,
-            outputOption, outputTemplate,'--cookies', cookiesPath,
+            '-x', '--audio-format', 'mp3',
+            outputOption, outputTemplate,
+            '--cookies', cookiesPath,
             link
         ]);
 
@@ -403,12 +403,15 @@ async function downloadAudio(ytDlpPath, link, outputFormat, formatType, outputOp
                     resolve();
                 } else {
                     reject(new Error(`Error al descargar el audio: ${code}`));
-                    res.status(400).json({ "error": "error" });
                 }
+            });
+
+            command.on('error', (error) => {
+                reject(new Error(`Error al ejecutar el comando: ${error.message}`));
             });
         });
     } catch (error) {
-        res.status(500).send(`Se produjo un error: ${error.message || error}`);
+        throw new Error(`Se produjo un error: ${error.message || error}`);
     }
 }
 
@@ -435,14 +438,14 @@ async function downloadVideo(ytDlpPath, link, outputOption, outputTemplate) {
         const command = spawn(ytDlpPath, [
             link,'-f', 'mp4', outputOption, outputTemplate,'--cookies', cookiesPath
         ])
-        console.log("Estoy aqui")
+       
         return new Promise((resolve, reject) => {
             command.on('close', (code) => {
                 if (code === 0) {
                     resolve()
                 } else {
                     reject(new Error(`Error al descargar audio ${code}`))
-                    res.status(500).send({ "error": "error" });
+                   
                 }
             })
         })
@@ -574,7 +577,7 @@ router.get('/download/:id/:idcarpeta/:mp3', (req, res) => {
     console.log(req.params.mp3)
     try {
         const { mp3 } = req.params
-        console.log("Es mp3", mp3)
+        
         if (mp3 === 'true') {
             const fileId = `${req.params.id}`
             const idCarpeta = `${req.params.idcarpeta}`
@@ -595,13 +598,13 @@ router.get('/download/:id/:idcarpeta/:mp3', (req, res) => {
             try {
                 const fileId = `${req.params.id}`
                 const idCarpeta = `${req.params.idcarpeta}`
-                console.log("Estoy por aqui")
+               
                 fs.readdir(`./descargas/${idCarpeta}`, (err, archivos) => {
                     if (err) throw err;
                     archivos.forEach(archivo => {
                         const filePath = `./descargas/${idCarpeta}/${archivo}`
                         if (fs.existsSync(filePath.normalize())) {
-                            console.log("Estoy aqui")
+                           
                             return res.download(filePath)
                         } else {
                             console.log(`no de encontro el archivo ${filePath}`)
