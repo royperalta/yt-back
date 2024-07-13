@@ -53,6 +53,12 @@ if (process.env.NODE_ENV === 'production') {
         };
         
 
+      /*   const httpsOptions = {
+          key: fs.readFileSync('/etc/letsencrypt/live/envivo.top/privkey.pem'), // Ruta a tu clave privada
+          cert: fs.readFileSync('/etc/letsencrypt/live/envivo.top/fullchain.pem'), // Ruta a tu certificado
+        };
+         */
+
     const httpsServer = https.createServer(httpsOptions, app)
     httpsServer.listen(PORT, () => {
         console.log('El servidor está corriendo en el puerto ' + PORT);
