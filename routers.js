@@ -222,8 +222,7 @@ async function downloadAudio(ytDlpPath, link, outputOption, outputTemplate) {
     try {
         const command = spawn(ytDlpPath, [
             '-x', '--audio-format', 'mp3',
-            outputOption, outputTemplate,
-            '--cookies', cookiesPath,
+            outputOption, outputTemplate,           
             link
         ]);
 
@@ -341,4 +340,4 @@ async function findDownloadedFile(videoId, idCarpeta) {
     }
 }
 
-export default router;
+export { router }
